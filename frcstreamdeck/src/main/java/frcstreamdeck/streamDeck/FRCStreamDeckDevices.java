@@ -1,11 +1,17 @@
-package steamDeck;
+package frcstreamdeck.streamDeck;
 
 import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import hidstuff.;
+import de.rcblum.stream.deck.device.IStreamDeck;
+import de.rcblum.stream.deck.device.SoftStreamDeck;
+import de.rcblum.stream.deck.device.StreamDeck;
+import purejavahidapi.HidDevice;
+import purejavahidapi.HidDeviceInfo;
+import purejavahidapi.PureJavaHidApi;
+
 
 /**
  * 
@@ -37,16 +43,14 @@ import hidstuff.;
  * @version 1.0.0
  *
  */
-public class StreamDeckDevices {
+public class FRCStreamDeckDevices {
 	
 	/**
 	 * Flag for enabling the software stream deck GUI. <code>true</code> Stream Deck
 	 * devices will be wrapped in a software SD, <code>false</code> the StreamDeck
 	 * will be returned directly.
 	 */
-	private static boolean enableSoftwareStreamDeck = false; 
-	
-	private static final Logger LOGGER = LogManager.getLogger(StreamDeckDevices.class);
+	private static boolean enableSoftwareStreamDeck = false;
 	
 	public static final int VENDOR_ID = 4057;
 	
@@ -60,17 +64,16 @@ public class StreamDeckDevices {
 
 	private static List<IStreamDeck> softDecks = null;
 	
-	
 	public static void enableSoftwareStreamDeck() {
-		StreamDeckDevices.enableSoftwareStreamDeck = true;
+		FRCStreamDeckDevices.enableSoftwareStreamDeck = true;
 	}
 	
 	public static void disableSoftwareStreamDeck() {
-		StreamDeckDevices.enableSoftwareStreamDeck = false;
+		FRCStreamDeckDevices.enableSoftwareStreamDeck = false;
 	}
 	
 	public static boolean isSoftwareStreamDeckEnabled() {
-		return StreamDeckDevices.enableSoftwareStreamDeck;
+		return FRCStreamDeckDevices.enableSoftwareStreamDeck;
 	}
 	
 	
@@ -82,7 +85,6 @@ public class StreamDeckDevices {
 			for (HidDeviceInfo info : devList) {
 				System.out.println("Vendor-ID: " + info.getVendorId() + ", Product-ID: " + info.getProductId());
 				if (info.getVendorId() == VENDOR_ID && info.getProductId() == PRODUCT_ID) {
-					LOGGER.info("Found ESD ["+info.getVendorId()+":"+info.getProductId()+"]");
 					deckInfos.add(info);
 				}
 			}
@@ -96,18 +98,10 @@ public class StreamDeckDevices {
 			deckDevices = new ArrayList<>(deckInfos.size());
 			if (info != null) {
 				try {
-					LOGGER.info("Connected Stream Decks:");
 					for (HidDeviceInfo hidDeviceinfo : deckInfos) {
-						LOGGER.info("  Manufacurer: " + hidDeviceinfo.getManufacturerString());
-						LOGGER.info("  Product:     " + hidDeviceinfo.getProductString());
-						LOGGER.info("  Device-Id:   " + hidDeviceinfo.getDeviceId());
-						LOGGER.info("  Serial-No:   " + hidDeviceinfo.getSerialNumberString());
-						LOGGER.info("  Path:        " + hidDeviceinfo.getPath());
-						LOGGER.info("");
 						deckDevices.add(PureJavaHidApi.openDevice(hidDeviceinfo));
 					}
 				} catch (IOException e) {
-					LOGGER.error("IO Error occured while searching for devices: ", e);
 				}
 			}
 		}
@@ -156,7 +150,7 @@ public class StreamDeckDevices {
 	    return builder.toString();
 	}
 	
-	private StreamDeckDevices() {
+	private FRCStreamDeckDevices() {
 		// Nothing here stanger
 	}
 }

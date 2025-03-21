@@ -20,6 +20,13 @@ dependencies {
     testImplementation libs.junit.jupiter
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation("io.github.vveird:StreamDeckCore:1.0.3")
+    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("org.apache.logging.log4j:log4j-core:2.16.0")
+    implementation("io.github.vveird:purejavahidapi:0.0.3")
+    implementation("net.java.dev.jna:jna-platform:4.5.2")
+
+    implementation fileTree(dir: 'libs', include: '*.jar')
 
     // This dependency is used by the application.
     implementation libs.guava
@@ -34,7 +41,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'frcstreamdeck.App'
+    mainClass = 'frcstreamdeck.streamDeck.Example2_Receiving_key_events'
 }
 
 tasks.named('test') {
