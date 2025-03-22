@@ -2,5 +2,6 @@
     "java.project.sourcePaths": [
         "app/src/main/java/frcstreamdeck"
     ],
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.compile.nullAnalysis.mode": "automatic"
 }
