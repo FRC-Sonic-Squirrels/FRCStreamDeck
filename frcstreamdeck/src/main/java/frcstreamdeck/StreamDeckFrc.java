@@ -9,16 +9,19 @@ import frcstreamdeck.streamDeck.IStreamDeckFRC;
 
 // serves as the main class responsible for doing things or something idk aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 public class StreamDeckFrc {
-    static IStreamDeckFRC streamDeck;
+    static IStreamDeckFRC[] streamDecks = new IStreamDeckFRC[Constants.STREAMDECK_COUNT];
     public static void main(String[] args) {
 		StreamDeckNetwork.initNetwork();
-        streamDeck = FRCStreamDeckDevices.getStreamDeck();
-        streamDeck.addKeyListener(new StreamDeckListener());
-		StreamDeckNetwork.smartDashboardTable.putValue("/streamdeck/rowOffset", NetworkTableValue.makeInteger(streamDeck.getRowOffset()));
-		StreamDeckNetwork.smartDashboardTable.putValue("/streamdeck/rowWidth", NetworkTableValue.makeInteger(streamDeck.getRowWidth()));
-		for (int i = 0; i < streamDeck.getKeySize(); i++) {
-			StreamDeckNetwork.smartDashboardTable.putValue(keyToString(i), NetworkTableValue.makeBoolean(false));
+		for (int i = 0; i < Constants.STREAMDECK_COUNT; i++) {
+			streamDecks[i] = FRCStreamDeckDevices.getStreamDeck(i);
+			streamDecks[i].addKeyListener(new StreamDeckListener(i));
+			StreamDeckNetwork.smartDashboardTable.putValue("/streamdecks/sd" + String.valueOf(i) + "/rowOffset", NetworkTableValue.makeInteger(streamDecks[i].getRowOffset()));
+			StreamDeckNetwork.smartDashboardTable.putValue("/streamdeck/sd" + String.valueOf(i) + "/rowWidth", NetworkTableValue.makeInteger(streamDecks[i].getRowWidth()));
+			for (int y = 0; y < streamDecks[i].getKeySize(); y++) {
+				StreamDeckNetwork.smartDashboardTable.putValue(keyToString(y, i), NetworkTableValue.makeBoolean(false));
+			}
 		}
+		
 		while (true) {
 			try {
 				Thread.sleep(1000);
@@ -28,11 +31,15 @@ public class StreamDeckFrc {
 		}
     }
 
-	public static String keyToString(int key){
-		return "/streamdeck/" + String.valueOf((key-streamDeck.getRowOffset())/5) + "_" + String.valueOf(key%streamDeck.getRowWidth()) + "_down";
+	public static String keyToString(int key, int deck){
+		return "/streamdeck/sd" + String.valueOf(deck) + "/" + String.valueOf((key-streamDecks[deck].getRowOffset())/5) + "_" + String.valueOf(key%streamDecks[deck].getRowWidth()) + "_down";
 	}
 
     public static class StreamDeckListener implements StreamKeyListener {
+		private int deck;
+		public StreamDeckListener(int deck){
+			this.deck = deck;
+		}
 		public void onKeyEvent(KeyEvent event) {
 			switch(event.getType()) {
 			case OFF_DISPLAY :
@@ -43,11 +50,11 @@ public class StreamDeckFrc {
 				break;
 			case PRESSED:
 				System.out.println(event.getKeyId() + ": pressed");
-				StreamDeckNetwork.smartDashboardTable.putValue(keyToString(event.getKeyId()), NetworkTableValue.makeBoolean(true));
+				StreamDeckNetwork.smartDashboardTable.putValue(keyToString(event.getKeyId(),deck), NetworkTableValue.makeBoolean(true));
 				break;
 			case RELEASED_CLICKED:
 				System.out.println(event.getKeyId() + ": released/clicked");
-				StreamDeckNetwork.smartDashboardTable.putValue(keyToString(event.getKeyId()), NetworkTableValue.makeBoolean(false));
+				StreamDeckNetwork.smartDashboardTable.putValue(keyToString(event.getKeyId(),deck), NetworkTableValue.makeBoolean(false));
 				break;
 			default:
 				break;

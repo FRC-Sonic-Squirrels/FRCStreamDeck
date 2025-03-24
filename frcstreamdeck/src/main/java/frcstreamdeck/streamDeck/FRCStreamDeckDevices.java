@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.rcblum.stream.deck.device.IStreamDeck;
 import de.rcblum.stream.deck.device.StreamDeck;
 import purejavahidapi.HidDevice;
 import purejavahidapi.HidDeviceInfo;
@@ -133,7 +132,7 @@ public class FRCStreamDeckDevices {
 		return decks != null ? decks.size() : 0;
 	}
 	
-	public static IStreamDeck getStreamDeck(int id) {
+	public static IStreamDeckFRC getStreamDeck(int id) {
 		if (decks == null || id < 0 || id >= getStreamDeckSize())
 			return null;
 		return decks.get(id);
