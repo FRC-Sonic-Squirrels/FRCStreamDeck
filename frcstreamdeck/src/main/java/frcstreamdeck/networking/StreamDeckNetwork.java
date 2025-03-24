@@ -2,6 +2,7 @@ package frcstreamdeck.networking;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.util.CombinedRuntimeLoader;
 import java.io.IOException;
@@ -15,7 +16,6 @@ public class StreamDeckNetwork {
     public static NetworkTableInstance inst;
     public static NetworkTable smartDashboardTable;
     public static void initNetwork(){
-        System.out.println("initNetwork");
         NetworkTablesJNI.Helper.setExtractOnStaticLoad(false);
         WPIUtilJNI.Helper.setExtractOnStaticLoad(false);
         WPIMathJNI.Helper.setExtractOnStaticLoad(false);
@@ -28,10 +28,10 @@ public class StreamDeckNetwork {
             System.exit(0);
         }
         inst = NetworkTableInstance.create();
-        inst.startClient4("localhost");
-        //inst.setServerTeam(2930, 1735);
-        inst.setServerTeam(2930); // where TEAM=190, 294, etc, or use inst.setServer("hostname") or similar
-        inst.startDSClient(); // recommended if running on DS computer; this gets the robot IP from the DS
+        inst.startClient4("StreamDeckProgram");
+        inst.setServerTeam(2930);
+        // this allows the program to connect easily during sim but requires the ds to be open
+        inst.startDSClient();
         smartDashboardTable = inst.getTable("SmartDashboard");
 
         // remiders:
