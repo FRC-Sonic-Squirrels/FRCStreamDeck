@@ -38,10 +38,6 @@ nativeConfig.dependencies.add wpilibTools.deps.wpilib("cscore")
 nativeConfig.dependencies.add wpilibTools.deps.wpilibOpenCv("frc" + wpi.frcYear.get(), wpi.versions.opencvVersion.get())
 
 dependencies {
-    // Use JUnit Jupiter for testing.
-    testImplementation libs.junit.jupiter
-    implementation wpi.java.deps.wpilib()
-    implementation wpi.java.vendor.java()
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation("io.github.vveird:StreamDeckCore:1.0.3")
     implementation("com.google.code.gson:gson:2.8.9")
@@ -64,8 +60,6 @@ dependencies {
     implementation group: "org.ejml", name: "ejml-simple", version: wpi.versions.ejmlVersion.get()
     implementation group: "us.hebi.quickbuf", name: "quickbuf-runtime", version: wpi.versions.quickbufVersion.get();
 
-    implementation fileTree(dir: 'libs', include: '*.jar')
-
     // This dependency is used by the application.
     implementation libs.guava
 }
@@ -79,10 +73,15 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'frcstreamdeck.streamDeck.Example2_Receiving_key_events'
+    mainClass = 'frcstreamdeck.networking.Program'
 }
 
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '8.8'
+    
 }

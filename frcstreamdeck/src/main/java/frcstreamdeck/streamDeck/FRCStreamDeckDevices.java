@@ -50,7 +50,7 @@ public class FRCStreamDeckDevices {
 	 * devices will be wrapped in a software SD, <code>false</code> the StreamDeck
 	 * will be returned directly.
 	 */
-	private static boolean enableSoftwareStreamDeck = false;
+	private static boolean enableSoftwareStreamDeck = true;
 	
 	public static final int VENDOR_ID = 4057;
 	
