@@ -73,7 +73,7 @@ import purejavahidapi.InputReportListener;
  * @version 1.0.0
  *
  */
-public class StreamDeck implements InputReportListener, IStreamDeck {
+public class StreamDeck implements InputReportListener, IStreamDeckFRC {
 
 	/**
 	 * Job that is submitted, when the Method {@link StreamDeck#setBrightness(int)} is called.<br>
@@ -635,4 +635,12 @@ public class StreamDeck implements InputReportListener, IStreamDeck {
 	public void releaseButton(int no) {;
 		this.pushButton(no);
 	}
+
+	public int getRowWidth(){
+		return 5;
+	};
+
+	public int getRowOffset(){
+		return 3;
+	};
 }

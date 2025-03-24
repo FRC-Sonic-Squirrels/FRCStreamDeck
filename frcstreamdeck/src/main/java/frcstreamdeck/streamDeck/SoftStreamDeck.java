@@ -21,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.Timer;
 import javax.swing.event.MouseInputAdapter;
 
-import de.rcblum.stream.deck.device.IStreamDeck;
 import de.rcblum.stream.deck.device.StreamDeck;
 import de.rcblum.stream.deck.event.KeyEvent;
 import de.rcblum.stream.deck.event.StreamKeyListener;
@@ -57,7 +56,7 @@ import purejavahidapi.HidDevice;
  * @author Roland von Werden
  *
  */
-public class SoftStreamDeck implements IStreamDeck {
+public class SoftStreamDeck implements IStreamDeckFRC {
 	
 	private static List<SoftStreamDeck> instances = new ArrayList<>(5);
 	
@@ -75,7 +74,7 @@ public class SoftStreamDeck implements IStreamDeck {
 	
 	private String name = null;
 		
-	private IStreamDeck streamDeck = null;
+	private IStreamDeckFRC streamDeck = null;
 	
 	StreamItem[] keys = null;
 	
@@ -101,7 +100,7 @@ public class SoftStreamDeck implements IStreamDeck {
 	private ConcurrentLinkedQueue<IconUpdate> updateQueue = new ConcurrentLinkedQueue<>();
 
 	
-	public SoftStreamDeck(String name, IStreamDeck streamDeck) {
+	public SoftStreamDeck(String name, IStreamDeckFRC streamDeck) {
 		this.streamDeck = streamDeck;
 		this.keys = new StreamItem[streamDeck != null ? this.streamDeck.getKeySize() : 15];
 		listerners = new ArrayList<>(4);
@@ -119,7 +118,7 @@ public class SoftStreamDeck implements IStreamDeck {
 		};
 		this.frame.setSize(new Dimension(486, 330));
 		this.frame.getContentPane().setBackground(Color.BLACK);
-		this.frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.frame.setResizable(false);
 		JLabel jl = new JLabel(new ImageIcon(this.drawBuffer));
 		jl.addMouseListener(new KeyListener());
@@ -456,4 +455,11 @@ public class SoftStreamDeck implements IStreamDeck {
 	     }
 	}
 
+	public int getRowWidth(){
+		return 5;
+	};
+
+	public int getRowOffset(){
+		return 0;
+	};
 }
