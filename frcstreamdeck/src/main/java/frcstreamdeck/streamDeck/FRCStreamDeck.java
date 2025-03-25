@@ -73,11 +73,11 @@ import purejavahidapi.InputReportListener;
  * @version 1.0.0
  *
  */
-public class StreamDeck implements InputReportListener, IStreamDeckFRC {
+public class FRCStreamDeck implements InputReportListener, IStreamDeckFRC {
 
 	/**
-	 * Job that is submitted, when the Method {@link StreamDeck#setBrightness(int)} is called.<br>
-	 * When executed it will call the Method {@link StreamDeck#internalUpdateBrightnes()}, which will send the brightness command to the stream deck.
+	 * Job that is submitted, when the Method {@link FRCStreamDeck#setBrightness(int)} is called.<br>
+	 * When executed it will call the Method {@link FRCStreamDeck#internalUpdateBrightnes()}, which will send the brightness command to the stream deck.
 	 * @author Roland von Werden
 	 *
 	 */
@@ -87,7 +87,7 @@ public class StreamDeck implements InputReportListener, IStreamDeckFRC {
 
 		@Override
 		public void run() {
-			StreamDeck.this.internalUpdateBrightnes();
+			FRCStreamDeck.this.internalUpdateBrightnes();
 		}
 	}
 
@@ -100,14 +100,14 @@ public class StreamDeck implements InputReportListener, IStreamDeckFRC {
 
 		@Override
 		public void run() {
-			while (StreamDeck.this.running || !StreamDeck.this.running && !recievePool.isEmpty()) {
-				if (!StreamDeck.this.recievePool.isEmpty()) {
-					KeyEvent event = StreamDeck.this.recievePool.poll();
+			while (FRCStreamDeck.this.running || !FRCStreamDeck.this.running && !recievePool.isEmpty()) {
+				if (!FRCStreamDeck.this.recievePool.isEmpty()) {
+					KeyEvent event = FRCStreamDeck.this.recievePool.poll();
 					int i = event.getKeyId();
-					if (i < StreamDeck.this.keys.length && StreamDeck.this.keys[i] != null) {
-						StreamDeck.this.keys[i].onKeyEvent(event);
+					if (i < FRCStreamDeck.this.keys.length && FRCStreamDeck.this.keys[i] != null) {
+						FRCStreamDeck.this.keys[i].onKeyEvent(event);
 					}
-					StreamDeck.this.listerners.stream().forEach(l -> 
+					FRCStreamDeck.this.listerners.stream().forEach(l -> 
 						{
 							try {
 								l.onKeyEvent(event);
@@ -117,7 +117,7 @@ public class StreamDeck implements InputReportListener, IStreamDeckFRC {
 						}
 					);
 				}
-				if (StreamDeck.this.recievePool.isEmpty()) {
+				if (FRCStreamDeck.this.recievePool.isEmpty()) {
 					try {
 						Thread.sleep(1);
 					} catch (InterruptedException e) {
@@ -130,7 +130,7 @@ public class StreamDeck implements InputReportListener, IStreamDeckFRC {
 	}
 
 	/**
-	 * Dispatches all commands asynchronously queued up in {@link StreamDeck#sendPool} to the ESD.
+	 * Dispatches all commands asynchronously queued up in {@link FRCStreamDeck#sendPool} to the ESD.
 	 * Send rate is limited to 500 commands per second.
 	 * If the execution of one command is completed in less tha on ms the thread is put to sleep for 1 ms.
 	 * As long as one loop takes up less then 2 ms the rest of the time is actively wated
@@ -148,7 +148,7 @@ public class StreamDeck implements InputReportListener, IStreamDeckFRC {
 			long t = 0;
 			while (running || !running && !sendPool.isEmpty()) {
 				if(sendPool.size() > 100) {
-					Runnable[] payloads = new Runnable[StreamDeck.this.getKeySize()];
+					Runnable[] payloads = new Runnable[FRCStreamDeck.this.getKeySize()];
 					Runnable resetTask = null;
 					Runnable brightnessTask = null;
 					Runnable task = null;
@@ -210,7 +210,7 @@ public class StreamDeck implements InputReportListener, IStreamDeckFRC {
 
 		@Override
 		public void run() {
-			StreamDeck.this.internalDrawImage(keyIndex, img);
+			FRCStreamDeck.this.internalDrawImage(keyIndex, img);
 		}
 
 	}
@@ -225,7 +225,7 @@ public class StreamDeck implements InputReportListener, IStreamDeckFRC {
 
 		@Override
 		public void run() {
-			StreamDeck.this.internalReset();
+			FRCStreamDeck.this.internalReset();
 		}
 	}
 
@@ -307,12 +307,12 @@ public class StreamDeck implements InputReportListener, IStreamDeckFRC {
 	/**
 	 * Keys set to be displayed on the StreamDeck
 	 */
-	private StreamItem[] keys = new StreamItem[StreamDeck.this.getKeySize()];
+	private StreamItem[] keys = new StreamItem[FRCStreamDeck.this.getKeySize()];
 
 	/**
 	 * current values if a key on a certain index is pressed or not
 	 */
-	private boolean[] keysPressed = new boolean[StreamDeck.this.getKeySize()];
+	private boolean[] keysPressed = new boolean[FRCStreamDeck.this.getKeySize()];
 	
 	/**
 	 * Amount of keys present in the stream deck.
@@ -367,7 +367,7 @@ public class StreamDeck implements InputReportListener, IStreamDeckFRC {
 	 * @param brightness
 	 *            Brightness from 0 .. 99
 	 */
-	public StreamDeck(HidDevice streamDeck, int brightness, int keyCount) {
+	public FRCStreamDeck(HidDevice streamDeck, int brightness, int keyCount) {
 		super();
 		this.keyCount = keyCount;
 		this.keys = new StreamItem[this.getKeySize()];
@@ -507,7 +507,7 @@ public class StreamDeck implements InputReportListener, IStreamDeckFRC {
 	@Override
 	public void onInputReport(HidDevice source, byte reportID, byte[] reportData, int reportLength) {
 		if (reportID == 1) {
-			for (int i = 0; i < StreamDeck.this.getKeySize() && i < reportLength; i++) {
+			for (int i = 0; i < FRCStreamDeck.this.getKeySize() && i < reportLength; i++) {
 				if (keysPressed[i] != (reportData[i] == 0x01)) {
 					fireKeyChangedEvent(i, reportData[i] == 0x01);
 					keysPressed[i] = reportData[i] == 0x01;

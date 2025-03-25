@@ -56,18 +56,18 @@ import purejavahidapi.HidDevice;
  * @author Roland von Werden
  *
  */
-public class SoftStreamDeck implements IStreamDeckFRC {
+public class FRCSoftStreamDeck implements IStreamDeckFRC {
 	
-	private static List<SoftStreamDeck> instances = new ArrayList<>(5);
+	private static List<FRCSoftStreamDeck> instances = new ArrayList<>(5);
 	
 	public static void showDecks() {
-		for (SoftStreamDeck softStreamDeck : instances) {
+		for (FRCSoftStreamDeck softStreamDeck : instances) {
 			softStreamDeck.frame.setVisible(true);
 		}
 	}
 	
 	public static void hideDecks() {
-		for (SoftStreamDeck softStreamDeck : instances) {
+		for (FRCSoftStreamDeck softStreamDeck : instances) {
 			softStreamDeck.frame.setVisible(false);
 		}
 	}
@@ -100,9 +100,9 @@ public class SoftStreamDeck implements IStreamDeckFRC {
 	private ConcurrentLinkedQueue<IconUpdate> updateQueue = new ConcurrentLinkedQueue<>();
 
 	
-	public SoftStreamDeck(String name, IStreamDeckFRC streamDeck) {
+	public FRCSoftStreamDeck(String name, IStreamDeckFRC streamDeck) {
 		this.streamDeck = streamDeck;
-		this.keys = new StreamItem[streamDeck != null ? this.streamDeck.getKeySize() : 15];
+		this.keys = new StreamItem[streamDeck != null ? this.streamDeck.getKeySize() : 18];
 		listerners = new ArrayList<>(4);
 		this.writeBuffer = IconHelper.getImageFromResource("/resources/sd-background.png");
 		this.drawBuffer = IconHelper.getImageFromResource("/resources/sd-background.png");
@@ -112,7 +112,7 @@ public class SoftStreamDeck implements IStreamDeckFRC {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void dispose() {
-				SoftStreamDeck.this.stopThreads();
+				FRCSoftStreamDeck.this.stopThreads();
 				super.dispose();
 			}
 		};
@@ -306,10 +306,10 @@ public class SoftStreamDeck implements IStreamDeckFRC {
 		
 		@Override
 		public void run() {
-			while(SoftStreamDeck.this.running) {
-				Graphics2D g = SoftStreamDeck.this.writeBuffer.createGraphics();
-				while(!SoftStreamDeck.this.updateQueue.isEmpty()) {
-					IconUpdate iu = SoftStreamDeck.this.updateQueue.poll();
+			while(FRCSoftStreamDeck.this.running) {
+				Graphics2D g = FRCSoftStreamDeck.this.writeBuffer.createGraphics();
+				while(!FRCSoftStreamDeck.this.updateQueue.isEmpty()) {
+					IconUpdate iu = FRCSoftStreamDeck.this.updateQueue.poll();
 					int spaceX = 20 + (90 * (4 - (iu.keyIndex % 5)));
 					int spaceY = 20 + (90 * (iu.keyIndex / 5));
 					g.drawImage(iu.img.image, spaceX, spaceY, null);
@@ -328,8 +328,8 @@ public class SoftStreamDeck implements IStreamDeckFRC {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			SoftStreamDeck.this.drawGraphics.drawImage(SoftStreamDeck.this.writeBuffer, 0, 0, null);
-			SoftStreamDeck.this.frame.repaint();
+			FRCSoftStreamDeck.this.drawGraphics.drawImage(FRCSoftStreamDeck.this.writeBuffer, 0, 0, null);
+			FRCSoftStreamDeck.this.frame.repaint();
 		}
 	}
 	
@@ -371,8 +371,8 @@ public class SoftStreamDeck implements IStreamDeckFRC {
 		public void mousePressed(MouseEvent e) {
 			int keyId = getIndex(e.getX(), e.getY());
 			if (keyId >= 0) {
-				KeyEvent evnt = new KeyEvent(SoftStreamDeck.this, keyId, Type.PRESSED);
-				SoftStreamDeck.this.recievePool.add(evnt);
+				KeyEvent evnt = new KeyEvent(FRCSoftStreamDeck.this, keyId, Type.PRESSED);
+				FRCSoftStreamDeck.this.recievePool.add(evnt);
 			}
 		}
 
@@ -380,8 +380,8 @@ public class SoftStreamDeck implements IStreamDeckFRC {
 		public void mouseReleased(MouseEvent e) {
 			int keyId = getIndex(e.getX(), e.getY()); 
 			if (keyId >= 0) {
-				KeyEvent evnt = new KeyEvent( SoftStreamDeck.this, keyId, Type.RELEASED_CLICKED);
-				SoftStreamDeck.this.recievePool.add(evnt);
+				KeyEvent evnt = new KeyEvent( FRCSoftStreamDeck.this, keyId, Type.RELEASED_CLICKED);
+				FRCSoftStreamDeck.this.recievePool.add(evnt);
 			}
 		}
 
@@ -406,14 +406,14 @@ public class SoftStreamDeck implements IStreamDeckFRC {
 
 		@Override
 		public void run() {
-			while (SoftStreamDeck.this.running || !SoftStreamDeck.this.running && !recievePool.isEmpty()) {
-				if (!SoftStreamDeck.this.recievePool.isEmpty()) {
-					KeyEvent event = SoftStreamDeck.this.recievePool.poll();
+			while (FRCSoftStreamDeck.this.running || !FRCSoftStreamDeck.this.running && !recievePool.isEmpty()) {
+				if (!FRCSoftStreamDeck.this.recievePool.isEmpty()) {
+					KeyEvent event = FRCSoftStreamDeck.this.recievePool.poll();
 					int i = event.getKeyId();
-					if (i < SoftStreamDeck.this.keys.length && SoftStreamDeck.this.keys[i] != null) {
-						SoftStreamDeck.this.keys[i].onKeyEvent(event);
+					if (i < FRCSoftStreamDeck.this.keys.length && FRCSoftStreamDeck.this.keys[i] != null) {
+						FRCSoftStreamDeck.this.keys[i].onKeyEvent(event);
 					}
-					SoftStreamDeck.this.listerners.stream().forEach(l -> 
+					FRCSoftStreamDeck.this.listerners.stream().forEach(l -> 
 						{
 							try {
 								l.onKeyEvent(event);
@@ -423,7 +423,7 @@ public class SoftStreamDeck implements IStreamDeckFRC {
 						}
 					);
 				}
-				if (SoftStreamDeck.this.recievePool.isEmpty()) {
+				if (FRCSoftStreamDeck.this.recievePool.isEmpty()) {
 					try {
 						Thread.sleep(1);
 					} catch (InterruptedException e) {

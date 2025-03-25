@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.rcblum.stream.deck.device.StreamDeck;
 import purejavahidapi.HidDevice;
 import purejavahidapi.HidDeviceInfo;
 import purejavahidapi.PureJavaHidApi;
@@ -48,7 +47,7 @@ public class FRCStreamDeckDevices {
 	 * devices will be wrapped in a software SD, <code>false</code> the StreamDeck
 	 * will be returned directly.
 	 */
-	private static boolean enableSoftwareStreamDeck = true;
+	private static boolean enableSoftwareStreamDeck = false;
 	
 	public static final int VENDOR_ID = 4057;
 	
@@ -78,10 +77,10 @@ public class FRCStreamDeckDevices {
 	public static HidDeviceInfo getStreamDeckInfo() {
 		if (deckInfos == null) {
 			deckInfos = new ArrayList<>(5);
-			//System.out.println("Scanning for devices");
+			System.out.println("Scanning for devices");
 			List<HidDeviceInfo> devList = PureJavaHidApi.enumerateDevices();
 			for (HidDeviceInfo info : devList) {
-				//System.out.println("Vendor-ID: " + info.getVendorId() + ", Product-ID: " + info.getProductId());
+				System.out.println("Vendor-ID: " + info.getVendorId() + ", Product-ID: " + info.getProductId());
 				if (info.getVendorId() == VENDOR_ID && info.getProductId() == PRODUCT_ID) {
 					deckInfos.add(info);
 				}
@@ -112,7 +111,7 @@ public class FRCStreamDeckDevices {
 			decks = new ArrayList<>(deckDevices.size());
 			if (dev != null) {
 				for (HidDevice hidDevice : deckDevices) {
-					decks.add(new frcstreamdeck.streamDeck.StreamDeck(hidDevice, 99, StreamDeck.BUTTON_COUNT));
+					decks.add(new frcstreamdeck.streamDeck.FRCStreamDeck(hidDevice, 99, frcstreamdeck.streamDeck.FRCStreamDeck.BUTTON_COUNT));
 				}
 			}
 		}
@@ -120,12 +119,12 @@ public class FRCStreamDeckDevices {
 			softDecks = new ArrayList<>(deckDevices.size()); 
 			for (int i=0; i<decks.size(); i++) {
 				IStreamDeckFRC iStreamDeck = decks.get(i);
-				softDecks.add(new frcstreamdeck.streamDeck.SoftStreamDeck("Stream Deck " + i, iStreamDeck));
+				softDecks.add(new frcstreamdeck.streamDeck.FRCSoftStreamDeck("Stream Deck " + i, iStreamDeck));
 			}
 		}
 		return !decks.isEmpty()
 				? (enableSoftwareStreamDeck && !GraphicsEnvironment.isHeadless() ? softDecks.get(0) : decks.get(0)) 
-				: (enableSoftwareStreamDeck && !GraphicsEnvironment.isHeadless() ? new frcstreamdeck.streamDeck.SoftStreamDeck("Soft Stream Deck", null) : null);
+				: (enableSoftwareStreamDeck && !GraphicsEnvironment.isHeadless() ? new frcstreamdeck.streamDeck.FRCSoftStreamDeck("Soft Stream Deck", null) : null);
 	}
 	
 	public static int getStreamDeckSize() {
