@@ -643,4 +643,11 @@ public class FRCStreamDeck implements InputReportListener, IStreamDeckFRC {
 	public int getRowOffset(){
 		return 3;
 	};
+	String name;
+	public String getName(){
+		return name;
+	}
+	public void setName(String name){
+		this.name = name;
+	}
 }

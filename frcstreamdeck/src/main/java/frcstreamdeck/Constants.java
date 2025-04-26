@@ -1,5 +1,5 @@
 package frcstreamdeck;
-// constants in case we want to change some things about this
+//""""""constant""""""
 public class Constants {
-    public static int STREAMDECK_COUNT = 2;
+    public static int STREAMDECK_COUNT = 0;
 }

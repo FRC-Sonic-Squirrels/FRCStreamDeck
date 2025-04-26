@@ -77,10 +77,10 @@ public class FRCStreamDeckDevices {
 	public static HidDeviceInfo getStreamDeckInfo() {
 		if (deckInfos == null) {
 			deckInfos = new ArrayList<>(5);
-			System.out.println("Scanning for devices");
+			//System.out.println("Scanning for devices");
 			List<HidDeviceInfo> devList = PureJavaHidApi.enumerateDevices();
 			for (HidDeviceInfo info : devList) {
-				System.out.println("Vendor-ID: " + info.getVendorId() + ", Product-ID: " + info.getProductId());
+				//System.out.println("Vendor-ID: " + info.getVendorId() + ", Product-ID: " + info.getProductId());
 				if (info.getVendorId() == VENDOR_ID && info.getProductId() == PRODUCT_ID) {
 					deckInfos.add(info);
 				}
@@ -103,6 +103,19 @@ public class FRCStreamDeckDevices {
 			}
 		}
 		return !deckDevices.isEmpty() ? deckDevices.get(0) : null;
+	}
+
+	public static void resetDecks(){
+		deckInfos = null;
+		deckDevices = null;
+		decks = null;
+		HidDevice dev = getStreamDeckDevice();
+		decks = new ArrayList<>(deckDevices.size());
+		if (dev != null) {
+			for (HidDevice hidDevice : deckDevices) {
+				decks.add(new frcstreamdeck.streamDeck.FRCStreamDeck(hidDevice, 99, frcstreamdeck.streamDeck.FRCStreamDeck.BUTTON_COUNT));
+			}
+		}
 	}
 	
 	public static IStreamDeckFRC getStreamDeck() {

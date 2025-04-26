@@ -102,7 +102,7 @@ public class FRCSoftStreamDeck implements IStreamDeckFRC {
 	
 	public FRCSoftStreamDeck(String name, IStreamDeckFRC streamDeck) {
 		this.streamDeck = streamDeck;
-		this.keys = new StreamItem[streamDeck != null ? this.streamDeck.getKeySize() : 18];
+		this.keys = new StreamItem[streamDeck != null ? this.streamDeck.getKeySize() : 15];
 		listerners = new ArrayList<>(4);
 		this.writeBuffer = IconHelper.getImageFromResource("/resources/sd-background.png");
 		this.drawBuffer = IconHelper.getImageFromResource("/resources/sd-background.png");
@@ -118,7 +118,7 @@ public class FRCSoftStreamDeck implements IStreamDeckFRC {
 		};
 		this.frame.setSize(new Dimension(486, 330));
 		this.frame.getContentPane().setBackground(Color.BLACK);
-		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.frame.setResizable(false);
 		JLabel jl = new JLabel(new ImageIcon(this.drawBuffer));
 		jl.addMouseListener(new KeyListener());
@@ -129,7 +129,7 @@ public class FRCSoftStreamDeck implements IStreamDeckFRC {
 		this.frame.setLayout(null);
 		this.frame.add(jl);
 		this.frame.setVisible(true);
-		this.frame.setAlwaysOnTop (true);
+		this.frame.setAlwaysOnTop (false);
 		this.startThreads();
 		instances.add(this);
 	}
